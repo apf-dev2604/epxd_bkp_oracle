@@ -456,7 +456,14 @@ def main():
     modes.add_argument('--restore-to', metavar='DIRECTORY')
     modes.add_argument('--test-email', action='store_true')
     modes.add_argument('--test-s3', action='store_true')
+    parser.add_argument(
+        '--preservation-only',
+        action='store_true',
+        help='Preserve available files without certifying Oracle recoverability'
+    )
     args = parser.parse_args()
+    if args.preservation_only and not args.backup:
+        parser.error('--preservation-only requires --backup')
     cfg, chunk_size = load_config(args.config)
     if args.test_email:
         notify(cfg, 'PHCAFE BACKUP ALERT TEST', 'Test only. Confirm inbox receipt.')
@@ -471,7 +478,14 @@ def main():
         log('PREFLIGHT reads metadata only; not proof of Oracle recoverability')
     elif args.backup:
         confirmation = cfg.get('source_confirmation', {})
-        required = ('inventory_reconciled', 'ebs_snapshot_preserved', 'source_files_stable', 'recovery_artifacts_complete')
+        if args.preservation_only:
+            log('PRESERVATION ONLY: EBS snapshot verification waived; '
+                'recovery artifacts incomplete or unverified; '
+                'Oracle recoverability NOT certified')
+            required = ('inventory_reconciled', 'source_files_stable')
+        else:
+            required = ('inventory_reconciled', 'ebs_snapshot_preserved',
+                        'source_files_stable', 'recovery_artifacts_complete')
         absent = [k for k in required if confirmation.get(k) is not True]
         if absent:
             raise RuntimeError('BACKUP SAFETY GATE: confirm these config.json source_confirmation flags only after verifying them: ' + ', '.join(absent))

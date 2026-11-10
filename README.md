@@ -94,7 +94,7 @@ The script does not verify all Oracle recovery prerequisites programmatically; t
 ```bash
 # Use tmux/screen; requires enough LOCAL staging free space (15GiB reserve).
 python3 -u expd_s3_dr.py --config config.json --backup \
-  >> /home/oracle/phcafe_s3_dr.log 2>&1
+  >> /home/oracle/expd_s3_dr.pyr.log 2>&1
 ```
 
 If interrupted, rerun the same command with the same source, config, prefix, workdir and local manifest. S3 objects are conditionally created, never overwritten on checksum conflict. A single 512 MiB raw chunk is held in memory during compression, so budget memory accordingly. Uploads are ordinary objects, not Oracle RMAN backupsets. The `COMPLETE_MANIFEST.json` with status `TRANSFER_VERIFIED` is only written after every configured chunk is audited. Store a second secure copy of the local manifest, log, and package outside the AWS account if account loss is a concern.

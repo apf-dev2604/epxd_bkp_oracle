@@ -24,7 +24,7 @@ A completed upload alone is NOT a guaranteed Oracle-openable backup.
 5. Preserve source EBS snapshots. Confirm stable read-only files and inventory.
    Only then change all four source_confirmation boolean flags in config.json to true.
 6. BACKUP:
-   python3 -u expd_s3_dr.py --config config.json --backup | tee -a /home/oracle/phcafe_s3_dr.log
+   python3 -u expd_s3_dr.py --config config.json --backup | tee -a /home/oracle/expd_s3_dr.pyr.log
    Re-run same command/config to resume. Do not discard local manifest/workdir.
 7. RESTORE ON ISOLATED TEST VM into an empty LOCAL filesystem (not S3 mount):
    python3 -u expd_s3_dr.py --config config.json --restore-to /restore/phcafe_files

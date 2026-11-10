@@ -54,7 +54,21 @@
     "/u02/oradata/stdbyinp/data_D-PHCAFE_TS-GT_INDX_1_FNO-45",
     "/u02/oradata/stdbyinp/data_D-PHCAFE_TS-GT_INDX_2_FNO-46",
     "/u02/oradata/stdbyinp/data_D-PHCAFE_TS-GAME_TXN_INDEX_FNO-47",
-    "/mnt/orabackup/backupset_rman_202611_0506/orafiles/PHCAFE_control_20261105.ctl"
+    "/mnt/orabackup/backupset_rman_202611_0506/orafiles/PHCAFE_control_20261105.ctl",
+    "/u03/oractl/stdbyinp/control01.ctl",
+    "/u03/oractl/stdbyinp/control02.ctl",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49056_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49057_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49058_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49059_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49060_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49061_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49100_664752049.log",
+    "/u03/backup/rman/stdbyinp/arclogs/PHCAFE_1_49101_664752049.log",
+    "/opt/oracle/product/19c/dbhome_1/dbs/initstdbyinp.ora",
+    "/opt/oracle/product/19c/dbhome_1/dbs/initstdbyinp2.ora",
+    "/opt/oracle/product/19c/dbhome_1/dbs/initstdbyinp.bkp.ora",
+    "/opt/oracle/product/19c/dbhome_1/dbs/initstdbyinp.ora.bkp"
   ],
   "email": {
     "enabled": true,
@@ -64,7 +78,7 @@
     "recipients": [
       "allan.faylona@iest.com.ph"
     ],
-    "username": "dbadmin.824@gmail.co",
+    "username": "dbadmin.824@gmail.com",
     "password_file": "/home/oracle/.config/oracle_dr/smtp_file_pwd",
     "use_tls": true
   },
@@ -72,9 +86,9 @@
     "description": "Operator attestation only; not proof of Oracle consistency",
     "account": "Same AWS account as original; operate on separate copied EC2/EBS volumes only",
     "oracle_open_mode_expected": "READ ONLY",
-    "inventory_reconciled": false,
+    "inventory_reconciled": true,
     "ebs_snapshot_preserved": false,
-    "source_files_stable": false,
+    "source_files_stable": true,
     "recovery_artifacts_complete": false
   }
 }

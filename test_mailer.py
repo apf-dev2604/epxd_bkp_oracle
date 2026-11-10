@@ -3,7 +3,7 @@
 import argparse
 import json
 from pathlib import Path
-from phcafe_s3_dr import get_mailer
+from  expd_s3_dr import get_mailer
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
