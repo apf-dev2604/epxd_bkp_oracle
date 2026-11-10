@@ -17,7 +17,7 @@ The database is **in the same AWS account** as this backup. This script is read-
 
 ## Files
 
-- `phcafe_s3_dr.py` — compressed physical-file preservation, immutable S3 writes, resumption, SHA-256 manifests, file reconstruction; never modifies Oracle.
+- `expd_s3_dr.py` — compressed physical-file preservation, immutable S3 writes, resumption, SHA-256 manifests, file reconstruction; never modifies Oracle.
 - `mailer.py` — user's SMTP class with STARTTLS certificate verification.
 - `config.example.json` — your real S3 bucket and region, PHCAFE known file list, Gmail SMTP placeholders and four explicit operator safety gates.
 - `test_mailer.py`, `preflight_aws.sh` — mail and bucket connectivity checks.
@@ -37,7 +37,7 @@ cd /home/oracle/scripts/phcafe_dr
 cp config.example.json config.json
 chmod 600 config.json
 python3 -m pip install --user -r requirements.txt
-python3 -m py_compile phcafe_s3_dr.py mailer.py watchdog.py test_mailer.py
+python3 -m py_compile expd_s3_dr.py mailer.py watchdog.py test_mailer.py
 python3 -m json.tool config.json >/dev/null
 ```
 
@@ -64,8 +64,8 @@ Bucket `oracle-data-migration-backup-454983519280-ap-southeast-1`, region `ap-so
 
 ```bash
 bash preflight_aws.sh
-python3 phcafe_s3_dr.py --config config.json --test-s3
-python3 phcafe_s3_dr.py --config config.json --preflight
+python3 expd_s3_dr.py --config config.json --test-s3
+python3 expd_s3_dr.py --config config.json --preflight
 ```
 
 `--test-s3` tests a disposable 1 MiB PUT/HEAD/GET SHA-256 roundtrip and attempts removal. It requires `s3:ListBucket`, `s3:PutObject`, `s3:GetObject`, `s3:HeadObject` (covered by GetObject), and optionally `s3:DeleteObject` for cleanup; S3 KMS permissions if encrypted. `head-bucket` and bucket policy can reject cross-account roles even when mount works. S3 Block Public Access must remain on; enable versioning/retention by policy. Avoid storing backups under a temporary mount cache.
@@ -93,7 +93,7 @@ The script does not verify all Oracle recovery prerequisites programmatically; t
 
 ```bash
 # Use tmux/screen; requires enough LOCAL staging free space (15GiB reserve).
-python3 -u phcafe_s3_dr.py --config config.json --backup \
+python3 -u expd_s3_dr.py --config config.json --backup \
   >> /home/oracle/phcafe_s3_dr.log 2>&1
 ```
 
@@ -106,7 +106,7 @@ If interrupted, rerun the same command with the same source, config, prefix, wor
 3. Run:
 
 ```bash
-python3 -u phcafe_s3_dr.py --config config.json \
+python3 -u expd_s3_dr.py --config config.json \
   --restore-to /restore/phcafe_files
 ```
 

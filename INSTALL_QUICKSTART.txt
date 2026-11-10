@@ -18,16 +18,16 @@ A completed upload alone is NOT a guaranteed Oracle-openable backup.
 4. Run:
    ./preflight_aws.sh
    python3 test_mailer.py --config config.json
-   python3 phcafe_s3_dr.py --config config.json --test-s3
+   python3 expd_s3_dr.py --config config.json --test-s3
    sqlplus -s '/ as sysdba' @oracle_readonly_inventory.sql
-   python3 phcafe_s3_dr.py --config config.json --preflight
+   python3 expd_s3_dr.py --config config.json --preflight
 5. Preserve source EBS snapshots. Confirm stable read-only files and inventory.
    Only then change all four source_confirmation boolean flags in config.json to true.
 6. BACKUP:
-   python3 -u phcafe_s3_dr.py --config config.json --backup | tee -a /home/oracle/phcafe_s3_dr.log
+   python3 -u expd_s3_dr.py --config config.json --backup | tee -a /home/oracle/phcafe_s3_dr.log
    Re-run same command/config to resume. Do not discard local manifest/workdir.
 7. RESTORE ON ISOLATED TEST VM into an empty LOCAL filesystem (not S3 mount):
-   python3 -u phcafe_s3_dr.py --config config.json --restore-to /restore/phcafe_files
+   python3 -u expd_s3_dr.py --config config.json --restore-to /restore/phcafe_files
 8. Check restored SHA-256 reports. Map restored paths, Oracle Home, SPFILE/PFILE,
    control files, redo reality. Do not run RESETLOGS or startup commands blindly.
    Recover/open ONLY on isolated test VM with a DBA-reviewed plan.
