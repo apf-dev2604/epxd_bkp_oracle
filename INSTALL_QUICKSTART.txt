@@ -1,0 +1,39 @@
+PHCAFE S3 BASELINE PRESERVATION / RESTORE-TEST KIT
+===============================================
+BACKUP TYPE: compressed, resumable physical FILE COPY (GZIP + SHA-256 + boto3 S3), NOT expdp, NOT RMAN.
+Run only on a separately copied EC2/EBS disk set in the SAME AWS ACCOUNT; never operate on the only surviving original. Confirm read-only/stable source.
+A completed upload alone is NOT a guaranteed Oracle-openable backup.
+
+1. Extract to /home/oracle/scripts/phcafe_dr and run as oracle:
+   cd /home/oracle/scripts/phcafe_dr
+   cp config.example.json config.json
+   chmod 600 config.json
+   python3 -m pip install --user -r requirements.txt
+2. Edit config.json: check all 47 datafile paths and the control backup; ADD both
+   existing /u03/oractl/stdbyinp/control*.ctl files and other recovery artifacts
+   explicitly using add_inventory_files.py; record SQL and OPatch reports. Do not
+   assume redo exists merely because v$logfile lists filenames.
+3. Configure email sender, recipient and password_file in config.json. Set password
+   in protected file mode 600. Check Gmail App Password availability.
+4. Run:
+   ./preflight_aws.sh
+   python3 test_mailer.py --config config.json
+   python3 phcafe_s3_dr.py --config config.json --test-s3
+   sqlplus -s '/ as sysdba' @oracle_readonly_inventory.sql
+   python3 phcafe_s3_dr.py --config config.json --preflight
+5. Preserve source EBS snapshots. Confirm stable read-only files and inventory.
+   Only then change all four source_confirmation boolean flags in config.json to true.
+6. BACKUP:
+   python3 -u phcafe_s3_dr.py --config config.json --backup | tee -a /home/oracle/phcafe_s3_dr.log
+   Re-run same command/config to resume. Do not discard local manifest/workdir.
+7. RESTORE ON ISOLATED TEST VM into an empty LOCAL filesystem (not S3 mount):
+   python3 -u phcafe_s3_dr.py --config config.json --restore-to /restore/phcafe_files
+8. Check restored SHA-256 reports. Map restored paths, Oracle Home, SPFILE/PFILE,
+   control files, redo reality. Do not run RESETLOGS or startup commands blindly.
+   Recover/open ONLY on isolated test VM with a DBA-reviewed plan.
+9. AFTER Oracle opens in READ ONLY, run dr_restore_validation.sql, query key business
+   tables, shut down / restart the isolated test VM, rerun validation.
+10. Record date, DBID, open mode, SCNs, available redo, SHA manifest, alert log and
+   actual restore results. Only then mark PHCAFE S3 baseline DR RESTORE VERIFIED.
+
+See README.md for essential restrictions, service limits, and details.
